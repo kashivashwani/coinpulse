@@ -5,9 +5,21 @@ import Link from 'next/link';
 import Image from 'next/image';
 import React from 'react'
 import DataTable from '../DataTable';
+import { TrendingCoinsFallback } from './fallback';
 
 const TrendingCoins = async () => {
-    const trendingCoins = await fetcher<{ coins: TrendingCoin[]}>('/search/trending', undefined, 300);
+    let trendingCoins: { coins: TrendingCoin[] } | null = null;
+
+    try {
+      trendingCoins = await fetcher<{ coins: TrendingCoin[]}>('/search/trending', undefined, 300);
+    } catch (error) {
+      console.error('[TrendingCoins] Failed to fetch trending coins:', error);
+      return <TrendingCoinsFallback />;
+    }
+
+    if (!trendingCoins?.coins?.length) {
+      return <TrendingCoinsFallback />;
+    }
 
     const columns: DataTableColumn<TrendingCoin>[] = [
         {
@@ -52,9 +64,8 @@ const TrendingCoins = async () => {
   return (
     <div id='trending-coins'>
         <h4>Trending Coins</h4>
-        <div id='trending-coins'>
           <DataTable
-              data={trendingCoins.coins.slice(0,6) || []}
+              data={trendingCoins.coins.slice(0,6)}
               columns={columns}
               rowKey={(row) => row.item.id}
               tableClassName='trending-coins-table'
@@ -62,7 +73,6 @@ const TrendingCoins = async () => {
               bodyCellClassName='py-2!'
           />
       </div>
-    </div>
   )
 }
 
