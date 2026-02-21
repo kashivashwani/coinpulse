@@ -2,6 +2,7 @@ import React from 'react';
 import DataTable from '../DataTable';
 
 type TrendingFallbackRow = { id: number };
+type CategoriesFallbackRow = { id: number };
 
 export const CoinOverviewFallback = () => {
   return (
@@ -70,6 +71,62 @@ export const TrendingCoinsFallback = () => {
         tableClassName='trending-coins-table'
         headerCellClassName='py-3!'
         bodyCellClassName='py-2!'
+      />
+    </div>
+  );
+};
+
+export const CategoriesFallback = () => {
+  const rows: CategoriesFallbackRow[] = Array.from({ length: 8 }, (_, index) => ({ id: index }));
+
+  const columns: DataTableColumn<CategoriesFallbackRow>[] = [
+    {
+      header: 'Category',
+      cellClassName: 'category-cell',
+      cell: () => <div className='skeleton category-skeleton' />,
+    },
+    {
+      header: 'Top Gainers',
+      cellClassName: 'top-gainers-cell',
+      cell: () => (
+        <>
+          <div className='skeleton coin-skeleton' />
+          <div className='skeleton coin-skeleton' />
+          <div className='skeleton coin-skeleton' />
+        </>
+      ),
+    },
+    {
+      header: '24h Change',
+      cellClassName: 'change-header-cell',
+      cell: () => (
+        <div className='change-cell'>
+          <div className='skeleton value-skeleton-sm' />
+          <div className='skeleton change-icon' />
+        </div>
+      ),
+    },
+    {
+      header: 'Market Cap',
+      cellClassName: 'market-cap-cell',
+      cell: () => <div className='skeleton value-skeleton-md' />,
+    },
+    {
+      header: '24h Volume',
+      cellClassName: 'volume-cell',
+      cell: () => <div className='skeleton value-skeleton-lg' />,
+    },
+  ];
+
+  return (
+    <div id='categories-fallback' className='custom-scrollbar'>
+      <h4>Top Categories</h4>
+
+      <DataTable
+        columns={columns}
+        data={rows}
+        rowKey={(row) => row.id}
+        tableClassName='mt-3'
       />
     </div>
   );
